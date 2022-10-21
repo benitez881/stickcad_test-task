@@ -1,4 +1,4 @@
-import React from "react";
+import React, { SyntheticEvent } from "react";
 import canvasHandler from "./CanvasHandler";
 import { Line } from "../../types/types";
 import styles from "./Canvas.module.scss";
@@ -38,34 +38,36 @@ const Canvas = () => {
     }
   }, [isDrawing, start, end, lines, linesScaled]);
 
-  const mousemove = (e: any) => {
+  const mousemove = (e: SyntheticEvent) => {
+    const mouseEvent = e.nativeEvent as MouseEvent;
     if (!isDrawing) return;
     setEnd({
-      x: e.nativeEvent.offsetX,
-      y: e.nativeEvent.offsetY,
+      x: mouseEvent.offsetX,
+      y: mouseEvent.offsetY,
     });
   };
 
-  const mouseHandler = (e: any) => {
+  const mouseHandler = (e: SyntheticEvent) => {
+    const mouseEvent = e.nativeEvent as MouseEvent;
     if (!isDrawing) {
       setIsDrawing(true);
       setStart({
-        x: e.nativeEvent.offsetX,
-        y: e.nativeEvent.offsetY,
+        x: mouseEvent.offsetX,
+        y: mouseEvent.offsetY,
       });
       setEnd({
-        x: e.nativeEvent.offsetX,
-        y: e.nativeEvent.offsetY,
+        x: mouseEvent.offsetX,
+        y: mouseEvent.offsetY,
       });
     } else {
       setIsDrawing(false);
       setStart({
-        x: e.nativeEvent.offsetX,
-        y: e.nativeEvent.offsetY,
+        x: mouseEvent.offsetX,
+        y: mouseEvent.offsetY,
       });
       setEnd({
-        x: e.nativeEvent.offsetX,
-        y: e.nativeEvent.offsetY,
+        x: mouseEvent.offsetX,
+        y: mouseEvent.offsetY,
       });
       const newLine = { start, end } as unknown as Line;
       addLine((lines) => [...lines, newLine]);
@@ -111,17 +113,17 @@ const Canvas = () => {
     addLineScaled(
       lines.map((line) => {
         if (!line.mid) return line;
-        //
+        // calculate coordinated of points, considering coefficient
         line.start.x *= coefficient;
         line.start.y *= coefficient;
         line.end.x *= coefficient;
         line.end.y *= coefficient;
-        //
+        // calculate diff between start line mid and calculated line mid
         const itemMidX = (line.start.x + line.end.x) / 2;
         const itemMidY = (line.start.y + line.end.y) / 2;
         const midDiffX = line.mid.x - itemMidX;
         const midDiffY = line.mid.y - itemMidY;
-        //
+        // add diff to points
         line.start.x += midDiffX;
         line.start.y += midDiffY;
         line.end.x += midDiffX;
