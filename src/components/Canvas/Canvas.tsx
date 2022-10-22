@@ -11,9 +11,9 @@ const Canvas = () => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [start, setStart] = useState({ x: 0, y: 0 });
   const [end, setEnd] = useState({ x: 0, y: 0 });
-  const [lines, addLine] = useState<Line[]>([]);
-  const [linesScaled, addLineScaled] = useState<Line[]>([]);
-
+  const [lines, setLine] = useState<Line[]>([]);
+  const [linesScaled, setLineScaled] = useState<Line[]>([]);
+  // componentDidUpdate
   useEffect(() => {
     if (!canvas.current) return;
     const current = canvas.current as HTMLCanvasElement;
@@ -70,8 +70,8 @@ const Canvas = () => {
         y: mouseEvent.offsetY,
       });
       const newLine = { start, end } as unknown as Line;
-      addLine((lines) => [...lines, newLine]);
-      addLineScaled((linesScaled) => [...linesScaled, newLine]);
+      setLine((lines) => [...lines, newLine]);
+      setLineScaled((linesScaled) => [...linesScaled, newLine]);
     }
   };
 
@@ -93,14 +93,14 @@ const Canvas = () => {
     }
     // if time more than duration, set default values
     if (timestamp - startTime > duration) {
-      addLine([]);
-      addLineScaled([]);
+      setLine([]);
+      setLineScaled([]);
       return;
     }
     //
     const coefficient = 1 - (timestamp - startTime) / duration / 10;
 
-    addLine(
+    setLine(
       lines.map((line) => {
         if (!line.mid) {
           const x = (line.start.x + line.end.x) / 2;
@@ -110,7 +110,7 @@ const Canvas = () => {
         return line;
       })
     );
-    addLineScaled(
+    setLineScaled(
       lines.map((line) => {
         if (!line.mid) return line;
         // calculate coordinated of points, considering coefficient
@@ -143,6 +143,8 @@ const Canvas = () => {
         ref={canvas}
         onClick={mouseHandler}
         onMouseMove={mousemove}
+        width="700"
+        height="400"
       />
       <button className={styles.canvas__button} onClick={onCollapse}>
         Collapse Lines
