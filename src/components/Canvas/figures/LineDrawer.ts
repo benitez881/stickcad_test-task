@@ -1,7 +1,7 @@
 import { Dot } from "../../../types/types";
 import Figure from "./FigureHandler";
 
-class Line extends Figure {
+class LineDrawer extends Figure {
   draw = (context: CanvasRenderingContext2D, start: Dot, end: Dot) => {
     context?.beginPath();
     context?.moveTo(start.x, start.y);
@@ -11,5 +11,5 @@ class Line extends Figure {
   };
 }
 
-const line = new Line();
-export default line;
+const lineDrawer = new LineDrawer();
+export default lineDrawer;

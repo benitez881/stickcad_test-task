@@ -1,8 +1,8 @@
 import React, { SyntheticEvent } from "react";
 import { Dot, Line } from "../../types/types";
 import styles from "./Canvas.module.scss";
-import line from "./figures/Line";
-import circle from "./figures/Circle";
+import lineDrawer from "./figures/LineDrawer";
+import circleDrawer from "./figures/CircleDrawer";
 import intersect from "./figures/Intersect";
 
 type Props = Object;
@@ -35,11 +35,11 @@ class Canvas extends React.Component<Props, State> {
     const ctx = current.getContext("2d") as CanvasRenderingContext2D;
 
     ctx.clearRect(0, 0, current.width, current.height);
-    line.draw(ctx, this.state.start, this.state.end);
+    lineDrawer.draw(ctx, this.state.start, this.state.end);
     if (this.state.lines.length > 0) {
       this.state.lines.forEach((item) => {
         const { start: startOld, end: endOld } = item;
-        line.draw(ctx, startOld, endOld);
+        lineDrawer.draw(ctx, startOld, endOld);
         const allLines = [
           ...this.state.linesScaled,
           { start: this.state.start, end: this.state.end },
@@ -47,13 +47,13 @@ class Canvas extends React.Component<Props, State> {
         const intersectPoints = intersect.getPoints(allLines);
         intersectPoints.forEach((point) => {
           if (!point) return;
-          circle.draw(ctx, point);
+          circleDrawer.draw(ctx, point);
         });
       });
     }
   }
 
-  mousemove = (e: SyntheticEvent): void => {
+  handleMouseMove = (e: SyntheticEvent): void => {
     const mouseEvent = e.nativeEvent as MouseEvent;
     if (!this.state.isDrawing) return;
     this.setState(() => ({
@@ -61,7 +61,7 @@ class Canvas extends React.Component<Props, State> {
     }));
   };
 
-  mouseHandler = (e: SyntheticEvent): void => {
+  handleMouseClick = (e: SyntheticEvent): void => {
     const mouseEvent = e.nativeEvent as MouseEvent;
     if (!this.state.isDrawing) {
       this.setState(() => ({
@@ -166,8 +166,8 @@ class Canvas extends React.Component<Props, State> {
         <canvas
           className={styles.canvas__field}
           ref={this.canvas}
-          onClick={this.mouseHandler}
-          onMouseMove={this.mousemove}
+          onClick={this.handleMouseClick}
+          onMouseMove={this.handleMouseMove}
           width="700"
           height="400"
         />
