@@ -1,6 +1,6 @@
-import { Dot, Line } from "../../types/types";
+import { Line } from "../../../types/types";
 
-class CanvasHandler {
+class Intersection {
   intersect = (firstLine: Line, secondLine: Line) => {
     const { start, end } = firstLine;
     const { start: start2, end: end2 } = secondLine;
@@ -31,22 +31,12 @@ class CanvasHandler {
 
     return { x, y };
   };
-  drawLine = (context: CanvasRenderingContext2D, start: Dot, end: Dot) => {
-    context?.beginPath();
-    context?.moveTo(start.x, start.y);
-    context?.lineTo(end.x, end.y);
-    context?.stroke();
-    context?.closePath();
-  };
-  drawCircle = (context: CanvasRenderingContext2D, point: Dot) => {
-    context.beginPath();
-    context.arc(point.x, point.y, 5, 0, 2 * Math.PI);
-    context!.fillStyle = "red";
-    context.fill();
-    context.stroke();
-    context.closePath();
-  };
+  getPoints(lines: Line[]) {
+    return lines
+      .flatMap((v, i) => lines.slice(i + 1).map((w) => this.intersect(v, w)))
+      .filter((point) => point !== false);
+  }
 }
 
-const canvasHandler = new CanvasHandler();
-export default canvasHandler;
+const intersect = new Intersection();
+export default intersect;
